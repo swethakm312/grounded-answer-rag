@@ -74,3 +74,20 @@ embeddings cache) and removed venv from git tracking with git rm -r
 --cached. Repository history isn't rewritten (the bad commit still exists 
 in history), but current state is clean going forward.
 
+## Day 2 — generator.py working, date-aware answers confirmed
+
+Built generator.py: retrieves chunks, adds the amendment's transitional 
+rules (§5.1-5.3) to context whenever a date-sensitive chunk is retrieved, 
+and prompts Gemini to select the correct value based on the reference 
+date and cite it.
+
+Verified with the earnings disregard test case:
+- 2026-02-15 (pre-amendment) -> correctly answered $120, cited §6.4.1(a)
+- 2026-04-01 (post-amendment) -> correctly answered $175, cited §6.4.1(a) 
+  as amended by Amendment §1.1
+
+Date-aware reasoning is handled entirely via prompt (not hardcoded 
+per-clause logic), relying on Gemini reading the transitional rules 
+directly. This worked correctly on first real test.
+
+

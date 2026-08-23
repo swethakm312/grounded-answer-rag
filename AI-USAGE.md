@@ -27,3 +27,19 @@ Participant Handbook AI policy.
 - Chunking strategy, which clauses to mark as superseded, and the overall 
   date-handling approach were decided by me based on the amendment text 
   and time constraints.
+
+  ### Day 2 (continued)
+- Used Claude to debug why related_id wasn't appearing in chunks.json 
+  despite the code looking correct in the editor — resolved by rewriting 
+  ingest.py cleanly from scratch, which fixed a silent save/staleness issue.
+- Diagnosis approach (checking for duplicate function definitions, 
+  verifying saved file contents directly) was collaborative; the fix 
+  itself (related_id linking) was designed by me based on the retrieval 
+  gap I identified through manual testing.
+
+  ### Day 2 (continued)
+- Used Claude to design and write generator.py, including the prompt 
+  structure for date-aware answering and the logic for injecting 
+  transitional rules into context.
+- Tested and verified the date logic myself with real before/after 
+  amendment questions.
