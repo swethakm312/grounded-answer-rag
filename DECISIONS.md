@@ -52,3 +52,25 @@ which provision) is deferred to generator.py via prompt, not hardcoded
 per-clause, since Amendment §5's transitional rules are plain-language.
 
 Parsed 146 chunks total from both documents.
+
+## Day 2 — Fixed retrieval gap for amended clauses
+
+Found that similarity search alone didn't reliably retrieve both the old 
+and amended version of a clause together (e.g. asking about the earnings 
+disregard sometimes returned only the pre-amendment $120 chunk, missing 
+the $175 replacement). Fixed by adding explicit related_id links between 
+each superseded manual clause and its amendment paragraph in ingest.py, 
+then expanding retrieval results to always include the linked chunk. 
+Verified: querying "earnings disregard" now correctly returns both 
+§6.4.1 (old, valid_to=2026-03-01) and Amendment §1.1 (new, 
+valid_from=2026-03-01).
+
+
+## Day 2 — Cleaned up accidental venv commit
+
+Accidentally committed venv/ (hundreds of package files) in an earlier 
+commit. Added .gitignore (excludes venv/, __pycache__/, *.pyc, and the 
+embeddings cache) and removed venv from git tracking with git rm -r 
+--cached. Repository history isn't rewritten (the bad commit still exists 
+in history), but current state is clean going forward.
+
