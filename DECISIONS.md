@@ -109,3 +109,20 @@ as a known false-negative refusal. This is a genuine limitation of pure
 similarity-based retrieval at k=3 — a production system would likely need 
 a larger k for date/duration-sensitive questions, or a secondary keyword-based 
 retrieval pass alongside embeddings. Would improve first if given more time.
+
+
+## Evaluation Results & Triage (23 August 2026)
+
+* **Overall Pass Rate:** 9/10 (90%)
+* **Date Logic Accuracy:** 100% on pre-amendment, post-amendment, and spanning calculation dates (Tests #4–8).
+* **Hallucination Control:** 100% — successfully returned "I don't know" on out-of-scope queries (Test #10) and incomplete policy clauses (Test #1).
+
+### Documented Limitations & Triage
+
+1. **Test #9 Baseline Retrieval Miss (Housing Dependent Eligibility)**
+   * *Finding:* FAISS top-$k$ ($k=3$) retrieved general housing allowance sections (§7.3.2, §2.3.1, §7.2.1) but missed the specific clause defining eligible dependents. The generator correctly fell back to "I don't know".
+   * *Triage:* Retained current $k=3$ density. Strict refusal behavior when information is missing is preferred over expanding context windows or risking hallucinated definitions.
+
+2. **API Rate Limit Mitigation**
+   * *Finding:* Gemini Free Tier imposes a 5 Requests Per Minute (RPM) ceiling on `gemini-2.5-flash`.
+   * *Triage:* Added a 12-second sleep delay between batch calls in `run_tests.py` to prevent HTTP 429 resource exhaustion during test suite execution.

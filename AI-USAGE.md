@@ -43,3 +43,8 @@ Participant Handbook AI policy.
   transitional rules into context.
 - Tested and verified the date logic myself with real before/after 
   amendment questions.
+
+### Phase 3: Evaluation Suite & Triage
+* **User Input:** Ran 10 test cases through `run_tests.py`, handled rate-limiting, and analyzed Test #9 baseline retrieval behavior.
+* **AI Assistance:** Helped set up batch execution rate-limiting (`time.sleep(12)`) and drafted triage documentation for safe-refusal evaluation.
+* **Human Verification:** Verified clean test output generation in `TEST_RUN_LOGS.md` and populated `TEST_QUESTIONS.md`.
