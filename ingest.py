@@ -3,17 +3,23 @@ import json
 
 AMENDMENT_EFFECTIVE = "2026-03-01"
 
-# Clauses whose OLD value is superseded by the amendment on the effective date
 SUPERSEDED_BY_AMENDMENT = {
-    "6.4.1": AMENDMENT_EFFECTIVE,   # earnings disregard
-    "4.3.2": AMENDMENT_EFFECTIVE,   # reporting deadline (date-of-change governs, handled at generation time)
-    "9.1.4": AMENDMENT_EFFECTIVE,   # reporting deadline reference
-    "6.6.1": AMENDMENT_EFFECTIVE,   # income thresholds table
-    "10.5.2": AMENDMENT_EFFECTIVE,  # sanction percentage
+    "6.4.1": AMENDMENT_EFFECTIVE,
+    "4.3.2": AMENDMENT_EFFECTIVE,
+    "9.1.4": AMENDMENT_EFFECTIVE,
+    "6.6.1": AMENDMENT_EFFECTIVE,
+    "10.5.2": AMENDMENT_EFFECTIVE,
+}
+
+MANUAL_TO_AMENDMENT_PARA = {
+    "6.4.1": "1.1",
+    "4.3.2": "2.1",
+    "9.1.4": "2.2",
+    "6.6.1": "3.1",
+    "10.5.2": "4.1",
 }
 
 def parse_manual(text, source_label):
-    """Split manual text into chunks by paragraph marker, e.g. **6.4.1**"""
     pattern = re.compile(
         r'\*\*(\d+(?:\.\d+){1,3}[A-Z]?)\*\*\s*(.*?)(?=\n\*\*\d+(?:\.\d+){1,3}[A-Z]?\*\*|\Z)',
         re.DOTALL
@@ -22,17 +28,18 @@ def parse_manual(text, source_label):
     for match in pattern.finditer(text):
         para_id = match.group(1)
         body = re.sub(r'\s+', ' ', match.group(2).strip())
+        related_para = MANUAL_TO_AMENDMENT_PARA.get(para_id)
         chunks.append({
             "id": f"§{para_id}",
             "text": body,
             "source": source_label,
             "valid_from": None,
             "valid_to": SUPERSEDED_BY_AMENDMENT.get(para_id),
+            "related_id": f"Amendment §{related_para}" if related_para else None,
         })
     return chunks
 
 def parse_amendment(text):
-    """Split amendment text into chunks by paragraph marker, e.g. **2.1**"""
     pattern = re.compile(
         r'\*\*(\d+\.\d+[A-Z]?)\*\*\s*(.*?)(?=\n\*\*\d+\.\d+[A-Z]?\*\*|\Z)',
         re.DOTALL
@@ -41,12 +48,14 @@ def parse_amendment(text):
     for match in pattern.finditer(text):
         para_id = match.group(1)
         body = re.sub(r'\s+', ' ', match.group(2).strip())
+        amended_clause = next((k for k, v in MANUAL_TO_AMENDMENT_PARA.items() if v == para_id), None)
         chunks.append({
             "id": f"Amendment §{para_id}",
             "text": body,
             "source": "amendment",
             "valid_from": AMENDMENT_EFFECTIVE,
             "valid_to": None,
+            "related_id": f"§{amended_clause}" if amended_clause else None,
         })
     return chunks
 
@@ -63,8 +72,6 @@ def load_and_chunk():
 if __name__ == "__main__":
     chunks = load_and_chunk()
     print(f"Parsed {len(chunks)} chunks total.")
-    for c in chunks[:5]:
-        print(c)
     with open("data/chunks.json", "w", encoding="utf-8") as f:
         json.dump(chunks, f, indent=2)
     print("Saved to data/chunks.json")
