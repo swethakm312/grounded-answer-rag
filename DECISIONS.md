@@ -110,6 +110,23 @@ similarity-based retrieval at k=3 — a production system would likely need
 a larger k for date/duration-sensitive questions, or a secondary keyword-based 
 retrieval pass alongside embeddings. Would improve first if given more time.
 
+## Update : Re-tested this scenario as part of the formal
+ten-question suite using a more specific phrasing — "What happens to a
+household member's status **and benefit award** after 40 days in
+residential care?" — and retrieval at k=3 correctly returned §4.2.1,
+§4.2.2, and §5.1.1 this time, producing a correct cited answer (see
+Test #2 in TEST_QUESTIONS.md / TEST_RUN_LOGS.md).
+
+The earlier failure above used vaguer, shorter phrasing ("status" only,
+no mention of "benefit award") as an ad-hoc manual test before the formal
+suite existed. Leaving both results here rather than deleting the earlier
+one, since together they're a concrete illustration of the underlying
+limitation: k=3 similarity search is sensitive enough to query phrasing
+that near-identical questions about the same clause can retrieve
+different chunk sets. A production system would want either a larger k
+for this class of question or a secondary keyword-based retrieval pass,
+as noted above — this phrasing sensitivity is itself evidence for that.
+
 
 ## Evaluation Results & Triage (23 August 2026)
 

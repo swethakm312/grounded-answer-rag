@@ -19,6 +19,9 @@
 | 10 | Negative Control | Municipal parking permit discount policy (2026-02-15) | "I don't know" / out of scope | Returned "I don't know" without hallucinating | **PASS** |
 
 ---
+> **Note:** Test #2 above passed with specific phrasing ("status and benefit
+> award"). An earlier ad-hoc test using vaguer phrasing ("status" only) failed
+> at retrieval — see DECISIONS.md for details on this phrasing-sensitivity limitation.
 
 ## Detailed Test Run Logs
 
