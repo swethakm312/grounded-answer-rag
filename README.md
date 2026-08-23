@@ -107,6 +107,13 @@ python run_tests.py
 
 ---
 
+> **Note on API quota:** The Gemini free tier caps usage at 20 requests per
+> day per project, separate from its 5-requests-per-minute limit (already
+> handled with a delay in `run_tests.py`). Running the full 10-question test
+> suite uses 10 of that daily allowance. If you plan to also try the
+> interactive CLI (`python cli.py`), do so *after* running `run_tests.py`,
+> or use a fresh API key/account, to avoid hitting the daily cap mid-run.
+
 ## Evaluation Summary
 
 - **Pass Rate:** 9/10 (90%)

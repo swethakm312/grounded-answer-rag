@@ -143,3 +143,21 @@ as noted above — this phrasing sensitivity is itself evidence for that.
 2. **API Rate Limit Mitigation**
    * *Finding:* Gemini Free Tier imposes a 5 Requests Per Minute (RPM) ceiling on `gemini-2.5-flash`.
    * *Triage:* Added a 12-second sleep delay between batch calls in `run_tests.py` to prevent HTTP 429 resource exhaustion during test suite execution.
+
+3. **Daily Quota Ceiling (discovered post-submission testing)**
+   * *Finding:* Beyond the 5 RPM limit already mitigated with a 12-second
+     sleep, the Gemini free tier also enforces a separate daily cap of
+     20 requests per project per model
+     (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). Verified during
+     a clean-clone re-test on 23 August 2026: after earlier interactive CLI
+     testing that day had already consumed most of the day's quota, running
+     `run_tests.py` returned `429 RESOURCE_EXHAUSTED` on 9 of 10 calls, with
+     only Test #3 completing before the cap was hit.
+   * *Triage:* Not fixed — this is a free-tier account limit, not a code
+     defect. `run_tests.py`'s pipeline, retrieval, and generation logic all
+     work correctly when quota is available (see Test #3's clean pass in
+     this same run, and the full clean-clone run documented earlier in this
+     file and in TEST_RUN_LOGS.md). Documented here so anyone re-running the
+     suite on a fresh key understands the cap: budget for exactly 10 calls
+     for a full `run_tests.py` run, and avoid interactive CLI testing on the
+     same key beforehand if a full clean run is needed same-day.
