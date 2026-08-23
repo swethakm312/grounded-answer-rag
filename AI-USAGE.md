@@ -21,9 +21,9 @@ Participant Handbook AI policy.
   me cross-check candidates and rule out false positives (e.g. §6.3.1/6.3.2, 
   which I initially flagged but we confirmed was a valid rule-and-exception, 
   not a contradiction)
-
-### Day 1 (fill in as you go)
-- 
-
-### Day 2 (fill in as you go)
--
+### Day 2
+- Used Claude to design and write ingest.py's chunking logic (regex-based 
+  paragraph split, date metadata scheme for amended clauses).
+- Chunking strategy, which clauses to mark as superseded, and the overall 
+  date-handling approach were decided by me based on the amendment text 
+  and time constraints.

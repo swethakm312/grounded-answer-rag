@@ -36,3 +36,19 @@ These findings will seed the ten-question test set required for the floor.
 ## Day 1 — Stack choice
 Chose Gemini API for generation and FAISS for vector search.
 Chunking by § section numbers since citations need to map to real clause numbers.
+
+## Day 2 — Amendment received, date-aware design
+
+Amendment No. 2026-01 confirmed Contradiction B (§9.1.4 vs §4.3.2) was real 
+— the amendment's own note says the two never matched. 
+
+Built ingest.py to chunk both the manual and the amendment by paragraph 
+number (§x.x.x), tagging each chunk with valid_from/valid_to dates. Five 
+provisions are hardcoded as superseded on 2026-03-01: §6.4.1 (disregard), 
+§4.3.2 and §9.1.4 (reporting deadline), §6.6.1 (thresholds), §10.5.2 
+(sanction rate). The amendment's own paragraphs are chunked separately and 
+tagged valid_from 2026-03-01. Date resolution (which date field governs 
+which provision) is deferred to generator.py via prompt, not hardcoded 
+per-clause, since Amendment §5's transitional rules are plain-language.
+
+Parsed 146 chunks total from both documents.
