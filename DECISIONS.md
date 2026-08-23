@@ -90,4 +90,22 @@ Date-aware reasoning is handled entirely via prompt (not hardcoded
 per-clause logic), relying on Gemini reading the transitional rules 
 directly. This worked correctly on first real test.
 
+## Day 2 — Known limitation: retrieval misses on the residential-care contradiction
 
+Tested "what happens to a household member's status after 40 days in 
+residential care?" and the system incorrectly refused ("I don't know"), 
+even though §4.2.2 (56-day temporary period) directly answers this. 
+Retrieval with k=3 pulled §4.2.1, §5.1.1, and §4.1.2, but missed §4.2.2 
+and §5.2.1 — the two clauses that actually form Contradiction A found 
+during manual analysis.
+
+Root cause: the question's wording ("household member's status", "40 days") 
+doesn't closely match the phrasing of §4.2.2 ("temporary for the first 56 
+days"), so semantic search ranked other related-but-less-relevant clauses 
+higher.
+
+Not fixed given time constraints. Documented here and in TEST_QUESTIONS.md 
+as a known false-negative refusal. This is a genuine limitation of pure 
+similarity-based retrieval at k=3 — a production system would likely need 
+a larger k for date/duration-sensitive questions, or a secondary keyword-based 
+retrieval pass alongside embeddings. Would improve first if given more time.
